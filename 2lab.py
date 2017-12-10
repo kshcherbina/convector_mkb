@@ -1,18 +1,21 @@
 import xlrd
+from tkinter import *
 
-def xls_to_txt():
-    project_name = input('Введите название:')
-    author_name = input('Введите имя автора:')
+def xls_to_txt(project_name,author_name,f_name):
+    
+    #project_name = input('Введите название:')
+    #author_name = input('Введите имя автора:')
     f = open('result.mkb', 'w')
     f.write(project_name+'\n'+author_name+'\n\n')
     
-    while True:
-        try:
-            f_name = input('Введите путь к файлу:')
-            table = xlrd.open_workbook(f_name)
-            break
-        except IOError:
-            print('No such file or directory')
+    
+    try:
+            
+        table = xlrd.open_workbook(f_name)
+        
+    except IOError:
+        print('No such file or directory')
+        return 0
     worksheet = table.sheet_by_index(0)
 
     count = 1
@@ -28,7 +31,7 @@ def xls_to_txt():
                     f.write(row[0])
                     f.write(row[1])
                 else:
-                    print(j)
+                    
                     f.write(','+str(count)+','+str(row[j])+','+str(row[j+1]))
                     count+=1
                 
@@ -42,6 +45,35 @@ def xls_to_txt():
             f.write('\n')
 
     f.close()
+
+def GUI():
+    root = Tk()
+    label = Label(root, text = 'Название',width=20,bd=3)
+    ent = Entry(root,width=20,bd=3)
+    label1 = Label(root, text = 'Имя',width=20,bd=3)
+    ent1 = Entry(root,width=20,bd=3)
+    label2 = Label(root, text = 'Путь к фалу',width=20,bd=3)
+    ent2 = Entry(root,width=20,bd=3)
+
+    label.pack()
+    ent.pack()
+    label1.pack()
+    ent1.pack()
+    label2.pack()
+    ent2.pack()
+
+    but = Button(root,
+          text="Нажать", #надпись на кнопке
+          width=30,height=5, #ширина и высота
+          bg="white",fg="blue") #цвет фона и надписи
+
+    but.bind('<Button-1>',lambda event: xls_to_txt(ent.get(),ent1.get(),ent2.get()))
+
+
+    but.pack()
     
+    root.mainloop()
+    
+
 if __name__ == "__main__":
-    xls_to_txt()
+    GUI()
